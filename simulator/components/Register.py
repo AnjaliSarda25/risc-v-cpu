@@ -3,9 +3,11 @@ class Register:
     # value = 0       # Value the register is holding
     # lock = 0        # Boolean to denote if the register is under use by a previous instruction
 
-    def __init__(self) -> None:
-        self.value = 0
+    def __init__(self, size: int) -> None:
+        self.size = size
+        self.value = '0'*size
         self.lock = False
+        
         pass
 
     def getName(self) -> str:
@@ -20,7 +22,7 @@ class Register:
         '''
         pass
 
-    def setValue(self, value: int) -> bool:
+    def setValue(self, value: str) -> bool:
         '''
         Setter function for the value parameter.
         \n\t Must ensure that the register is in an unlocked state before updating the value
