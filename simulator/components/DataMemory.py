@@ -1,8 +1,11 @@
-from Memory import Memory
+from simulator.components.Memory import Memory
+
+MEM_SIZE = 16384 + 5*4
 
 class DataMemory(Memory):
 
-    def __init__(self, size: int) -> None:
+    def __init__(self, size: int = MEM_SIZE) -> None:
+        print("DMem created")
         pass
 
     def setData(self, address: int, newVal: int) -> None:

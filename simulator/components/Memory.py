@@ -1,12 +1,10 @@
 class Memory:
 
-    data = []
-
-    def __init__(self, size: int) -> None:
+    def __init__(self, size: int, delay: int) -> None:
         '''
         Initializes the memory to be of a fixed size
         '''
-        pass
+        self.data = ["00000000",] * size
 
     def getData(self, address: int) -> str:
         '''

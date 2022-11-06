@@ -1,10 +1,11 @@
 class Register:
+    # name = ""       # Name of the register
+    # value = 0       # Value the register is holding
+    # lock = 0        # Boolean to denote if the register is under use by a previous instruction
 
-    name = ""       # Name of the register
-    value = 0       # Value the register is holding
-    lock = 0        # Boolean to denote if the register is under use by a previous instruction
-
-    def __init__(self, name: str, value: int) -> None:
+    def __init__(self) -> None:
+        self.value = 0
+        self.lock = False
         pass
 
     def getName(self) -> str:
