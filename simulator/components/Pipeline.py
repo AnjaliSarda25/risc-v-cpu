@@ -8,6 +8,8 @@ DX_intermediates = {
     'opcode':Register(), 
     'rs1':Register(), 
     'rs2':Register(), 
+    'func3':Register(),
+    'func7':Register(),
     'imm':Register(), 
     'rd':Register(),
     'mem_addr':Register()
