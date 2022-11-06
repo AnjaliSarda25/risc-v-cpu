@@ -22,9 +22,12 @@ XM_intermediates = {
 MW_intermediate = Register()
 
 def fetch(self, pc: int, simulation) -> str:
-    pass
+    temp = simulation.i_mem.data[pc: pc+4]
+    instruction = ""
+    instruction += temp
+    return instruction
 
-def decode():
+def decode(self):
     pass
 
 def execute():

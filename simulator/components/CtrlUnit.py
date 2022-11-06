@@ -13,5 +13,8 @@ class CtrlUnit:
         print(instruction_memory)
         data_memory = d_mem
 
+
     def pipeline(self):
         pass
+
+    
