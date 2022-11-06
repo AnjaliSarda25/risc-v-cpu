@@ -3,26 +3,26 @@ class ALU:
         print("ALU created")
         pass
 
-    def ADD(rs1, rs2):
+    def ADD(self, rs1, rs2):
         return rs1 + rs2 
     
-    def SUB(rs1, rs2):
+    def SUB(self, rs1, rs2):
         return rs1 - rs2 
     
-    def MUL(rs1, rs2):
+    def MUL(self, rs1, rs2):
         return rs1 * rs2 
     
-    def OR(rs1, rs2):
-        return rs1 or rs2 
+    def OR(self, rs1, rs2):
+        return rs1 | rs2 
     
-    def AND(rs1, rs2):
-        return rs1 and rs2
+    def AND(self, rs1, rs2):
+        return rs1 & rs2
 
-    def SLL(rs1):
+    def SLL(self, rs1):
         '''Returns the result of applying a logical left shift to input value'''
         pass
 
-    def SRA(rs1):
+    def SRA(self, rs1):
         '''Returns the result of applying an arithmetic right shift to input value'''
         pass
 
