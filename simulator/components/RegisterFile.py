@@ -18,15 +18,3 @@ class RegisterFile:
         while (i != NO_OF_REGISTERS):
             self.gen_registers.append(Register())
             i += 1
-
-    # def setRegister(self, registerName: str, value: int) -> None:
-    #     '''
-    #     Sets the value of the register with the name "registerName" in the list of registers to the value contained in "value"
-    #     '''
-    #     pass
-
-    # def getRegister(self, registerName: str) -> int:
-    #     '''
-    #     Gets the value of the register with the name "registerName" in the list of registers
-    #     '''
-    #     pass

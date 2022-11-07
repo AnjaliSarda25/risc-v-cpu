@@ -1,20 +1,30 @@
 from simulator.components.Pipeline import fetch, decode, execute, memory, writeback
 from simulator.components.Register import Register
 
-instruction_memory: object
-data_memory: object
-ALU: object
+FD_intermediate = str()
+
+DX_intermediates = {
+    'rs1_data' : Register(),
+    'rs2_data' : Register(),
+    'imm' : Register(12),
+    'rd' : str(),
+    'funct10' : str()  
+    }
+
+XM_intermediates = {
+    'res_data' : Register(),
+    'rd' : str(),
+    'operation_name' : str()
+    }
+
+MW_intermediate = Register()
 
 class CtrlUnit:
     
-    def __init__(self, i_mem, d_mem):
+    def __init__(self):
         print("CU created")
-        instruction_memory = i_mem
-        print(instruction_memory)
-        data_memory = d_mem
 
-
-    def pipeline(self):
+    def pipeline(self, reg_file, i_mem, d_mem):
         pass
 
-    
+        
