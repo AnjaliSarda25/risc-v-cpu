@@ -1,14 +1,12 @@
 import simulator.components as comp
 
-MEM_DELAY_CYCLES = 1
-
 class Simulation:
 
     def __init__(self, 
     binary: str, 
     no_of_instructions: int,
-    i_mem_delay: int = MEM_DELAY_CYCLES, 
-    d_mem_delay: int = MEM_DELAY_CYCLES) -> None:
+    i_mem_delay: int, 
+    d_mem_delay: int) -> None:
         
         print("Simulator initialized")
         self.i_mem = comp.InstructionMemory(binary, i_mem_delay)

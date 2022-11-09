@@ -7,6 +7,8 @@ def resolveOverflow(val: int) -> int:
 
     if (val > MAX or val < MIN):
         return val % CEIL
+    
+    return val
 
 
 def evaluateSignExtension(val: int) -> int:

@@ -13,7 +13,7 @@ class DataMemory(Memory):
     def writeData(self, address: int, data: int) -> bool:
         '''
         Writes input data to the given address after number of cycles as given by the data memory's delay property, and returns True.\n
-        Returns False if a new request is made or a request is currently being processed
+        Returns False if a new request is made or a request is currently being processed.
         '''
         if (self.res_time == -1):
             self.res_time = self.delay
@@ -23,13 +23,13 @@ class DataMemory(Memory):
                 data = data + UNSIGNED_CEIL
             
             bin_data = bin(data)[2:]
-            zero_bits = '0' * (self.size - len(bin_data))
+            zero_bits = '0' * (32 - len(bin_data))
             data_str = zero_bits + bin_data
             
-            self.data[address] = data_str[:8]
-            self.data[address + 1] = data_str[8:16]
-            self.data[address + 2] = data_str[16:24]
-            self.data[address + 3] = data_str[24:]
+            self.data[address]      = data_str[:8]
+            self.data[address + 1]  = data_str[8:16]
+            self.data[address + 2]  = data_str[16:24]
+            self.data[address + 3]  = data_str[24:]
             return True
         
         return False

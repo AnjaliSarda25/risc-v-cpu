@@ -1,25 +1,28 @@
 import simulator.components as comp
 
-def fetch(reg_file: comp.RegisterFile, i_mem: comp.InstructionMemory) -> bool:
+def fetch(reg_file: comp.RegisterFile, i_mem: comp.InstructionMemory, no_of_instructions: int) -> bool:
     '''
     Requests the instruction memory for the instruction to which the program counter points.\n 
     Returns True once instruction is fetched and stored in the FD_intermediate.\n
-    Returns False If FD_intermediate is already filled or if instruction memory is processing the request.\n
+    Returns False if program counter points to an instruction beyond those in the program, 
+    if FD_intermediate is already filled or if instruction memory is processing the request.\n
     '''
     pc = reg_file.program_counter.getValue()
     
-    response = i_mem.getData(pc)
+    if (pc / 4) >= no_of_instructions:
+        return False
+
+    response = i_mem.readData(pc)
     
     if not response:
         return False
     
     if comp.FD_intermediate:
+        print("f")
         return False
-
-    instruction = ""
-    instruction = instruction.join(response)
     
-    comp.FD_intermediate['instruction'] = instruction
+    comp.FD_intermediate = response
+    print("F")
     
     return True
 
@@ -31,8 +34,8 @@ def decode(reg_file: comp.RegisterFile) -> bool:
     Returns False in case of data dependencies
     Returns False if DX_intermediate is already filled or if FD_intermediate is empty (there is no instruction to decode).\n
     '''
-
     if comp.DX_intermediate:
+        print("d")
         return False
     
     if not comp.FD_intermediate:
@@ -59,53 +62,72 @@ def decode(reg_file: comp.RegisterFile) -> bool:
 
     # only the fields relevant to the instruction being decoded are used to fill DX_intermediate
     
-    if not reg_file.gen_registers[rs1].available:
-        return False
-    comp.DX_intermediate['rs1_data'] = reg_file.gen_registers[rs1].getValue()
-    
     # for operations 'ADD', 'SUB', 'AND', 'OR', 'SLL', 'SRA'
     if (opcode == "0110011"):
-        comp.DX_intermediate['type']        = 'R'
-
+        if not reg_file.gen_registers[rs1].available:
+            print("d")
+            return False
         if not reg_file.gen_registers[rs2].available:
+            print("d")
             return False
 
+        comp.DX_intermediate['type']        = 'R'
+        comp.DX_intermediate['rs1_data']    = reg_file.gen_registers[rs1].getValue()
         comp.DX_intermediate['rs2_data']    = reg_file.gen_registers[rs2].getValue()
         comp.DX_intermediate['funct']       = funct7 + funct3
         reg_file.gen_registers[rd].toggleAvailability()
         comp.DX_intermediate['rd']          = rd
+        print("D")
         return True
 
     # for operation 'BEQ'
     if (opcode == "1100011"):
-        comp.DX_intermediate['type']        = 'U'
-
+        if not reg_file.gen_registers[rs1].available:
+            print("d")
+            return False
         if not reg_file.gen_registers[rs2].available:
+            print("d")
             return False
 
+        comp.DX_intermediate['type']        = 'U'
+        comp.DX_intermediate['rs1_data']    = reg_file.gen_registers[rs1].getValue()
         comp.DX_intermediate['rs2_data']    = reg_file.gen_registers[rs2].getValue()
         comp.DX_intermediate['beq_offset']  = beq_offset
+        comp.DX_intermediate['operation']   = opcode
+        print("D")
         return True
 
     # for operation 'SW'
     if (funct3 + opcode) == '0100100011':
-        comp.DX_intermediate['imm']         = sw_offset
-
-        if not reg_file.gen_registers[rs2].available:
+        if not reg_file.gen_registers[rs1].available:
+            print("d")
             return False
-
+        if not reg_file.gen_registers[rs2].available:
+            print("d")
+            return False
+    
+        comp.DX_intermediate['type']        = 'I'
+        comp.DX_intermediate['rs1_data']    = reg_file.gen_registers[rs1].getValue()
         comp.DX_intermediate['rs2_data']    = reg_file.gen_registers[rs2].getValue()
+        comp.DX_intermediate['imm']         = sw_offset
+        comp.DX_intermediate['operation']   = funct3 + opcode
+        print("D")
+        return True
 
     # for operations 'ADDI', 'LW'
     else:
-        comp.DX_intermediate['imm']         = imm
+        if not reg_file.gen_registers[rs1].available:
+            print("d")
+            return False
+    
+        comp.DX_intermediate['type']        = 'I'
+        comp.DX_intermediate['rs1_data']    = reg_file.gen_registers[rs1].getValue()
+        reg_file.gen_registers[rd].toggleAvailability()
         comp.DX_intermediate['rd']          = rd
-    
-    # for operations 'ADDI', 'LW', 'SW'
-    comp.DX_intermediate['type']            = 'I'
-    comp.DX_intermediate['operation']       = funct3 + opcode
-    
-    return True
+        comp.DX_intermediate['imm']         = imm
+        comp.DX_intermediate['operation']   = funct3 + opcode
+        print("D")
+        return True
 
 
 def execute():
@@ -116,7 +138,6 @@ def execute():
     Evaluates the equality condition in case of 'BEQ' Returns increment for program counter if the equality condition is satisfied.\n
     Returns False if XM_intermediate is already filled or if DX_intermediate is empty (there is no decoded instruction to execute).
     '''
-
     if comp.XM_intermediate:
         return False
     
@@ -125,42 +146,47 @@ def execute():
     
     # for operations 'ADD', 'SUB', 'AND', 'OR', 'SLL', 'SRA'
     if (comp.DX_intermediate['type'] == 'R'):
+        comp.XM_intermediate['type']        = comp.DX_intermediate['type']
         comp.XM_intermediate['res']         = comp.getResult(comp.DX_intermediate['rs1_data'],
                                                              comp.DX_intermediate['rs2_data'],
-                                                             comp.DX_intermediate['funct1'],
+                                                             comp.DX_intermediate['funct'],
                                                              'R')
-        
-        comp.XM_intermediate['rd'] = comp.DX_intermediate['rd']
+        comp.XM_intermediate['rd']          = comp.DX_intermediate['rd']
+        print("X")
         return True
 
     # for operation 'SW'
     if (comp.DX_intermediate['operation'] == "0100100011"):
+        comp.XM_intermediate['type']        = comp.DX_intermediate['type']
         comp.XM_intermediate['res']         = comp.getResult(comp.DX_intermediate['rs1_data'],
                                                              comp.DX_intermediate['imm'],
                                                              None,
                                                              'I')
-        
-        comp.XM_intermediate['rd']          = comp.DX_intermediate['rd']
+        comp.XM_intermediate['rs2_data']    = comp.DX_intermediate['rs2_data']
         comp.XM_intermediate['operation']   = comp.DX_intermediate['operation']
+        print("X")
         return True
 
     # for operations 'ADDI', 'LW'
     if (comp.DX_intermediate['type'] == 'I'):
+        comp.XM_intermediate['type']        = comp.DX_intermediate['type']
         comp.XM_intermediate['res']         = comp.getResult(comp.DX_intermediate['rs1_data'],
                                                              comp.DX_intermediate['imm'],
                                                              None,
                                                              'I')
-        
-        comp.XM_intermediate['rs2_data']    = comp.DX_intermediate['rs2_data']
+        comp.XM_intermediate['rd']          = comp.DX_intermediate['rd']
         comp.XM_intermediate['operation']   = comp.DX_intermediate['operation']
+        print("X")
         return True
 
     # for operation BEQ
-    if (comp.DX_intermediate['rs1_data'] == comp.DX_intermediate['rs2_data']):
-        return comp.getResult(0, comp.DX_intermediate['beq_offset'], None, 'U')
-
-    comp.XM_intermediate['type'] = comp.DX_intermediate['type']
-    return True
+    if (comp.DX_intermediate['operation'] == "1100011"):
+        if (comp.DX_intermediate['rs1_data'] == comp.DX_intermediate['rs2_data']):
+            comp.XM_intermediate['type'] = comp.DX_intermediate['type']
+            print("X")
+            return comp.getResult(0, comp.DX_intermediate['beq_offset'], None, 'U')
+        print("X")
+        return True
 
 
 def memory(d_mem: comp.DataMemory):
@@ -168,24 +194,29 @@ def memory(d_mem: comp.DataMemory):
     Handles memory accesses for operations 'LW', 'SW', 'LOADNOC' and 'SENDNOC'.\n
     Transfers XM_intermediate as is to MW_intermediate for operations 'ADD', 'SUB', 'AND', 'OR', 'SLL', 'SRA', 'ADDI', 'BEQ'.
     '''
+
     if comp.MW_intermediate:
         return False
     
     if not comp.XM_intermediate:
         return False
     
+    # for operation 'BEQ'
     if comp.XM_intermediate['type'] == 'U':
         comp.MW_intermediate['type'] = comp.XM_intermediate['type']
+        print("M")
+        return True
 
     # for operations 'ADD', 'SUB', 'AND', 'OR', 'SLL', 'SRA', 'ADDI' 
     if ('operation' not in comp.XM_intermediate) or (comp.XM_intermediate['operation'] == "0000010011"):
         comp.MW_intermediate['rd']          = comp.XM_intermediate['rd']
         comp.MW_intermediate['res']         = comp.XM_intermediate['res']
+        print("M")
         return True
     
     # for operation 'LW'
     if comp.XM_intermediate['operation'] == "0100000011":
-        loaded_data = d_mem.getData(comp.XM_intermediate['res'])
+        loaded_data = d_mem.readData(comp.XM_intermediate['res'])
 
         if not loaded_data:
             return False
@@ -196,16 +227,18 @@ def memory(d_mem: comp.DataMemory):
 
         comp.MW_intermediate['res']         = loaded_data
         comp.MW_intermediate['rd']          = comp.XM_intermediate['rd']
+        print("M")
         return True
     
     # for operation 'SW'
     if comp.XM_intermediate['operation'] == "0100100011":
-        write_complete = d_mem.data[comp.XM_intermediate['res']].writeData(comp.XM_intermediate['rs2_data'])
+        write_complete = d_mem.writeData(comp.XM_intermediate['res'], comp.XM_intermediate['rs2_data'])
         
         if not write_complete:
             return False
         
         comp.MW_intermediate['operation']       = comp.XM_intermediate['operation']
+        print("M")
         return True
 
 
@@ -214,6 +247,7 @@ def writeback(reg_file: comp.RegisterFile):
         return False
 
     if 'rd' in comp.MW_intermediate:
+        print("W")
         reg_file.gen_registers[comp.MW_intermediate['rd']].setValue(comp.MW_intermediate['res'])
         reg_file.gen_registers[comp.MW_intermediate['rd']].toggleAvailability()
     

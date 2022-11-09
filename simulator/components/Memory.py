@@ -16,7 +16,8 @@ class Memory:
             self.res_time = self.delay
 
         if (self.res_time == 0):
-            return self.data[address : address + 4]
+            instruction = ""
+            return instruction.join(self.data[address : address + 4])
         
         return None
 
