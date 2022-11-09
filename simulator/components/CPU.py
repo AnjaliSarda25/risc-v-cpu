@@ -9,9 +9,18 @@ class CPU:
         self.cycles = 0
 
     def run(self, i_mem, d_mem):
+        '''
+        Loops pipelined execution of instructions until all instructions are executed
+        Returns the per cycle register state of the program as a list of lists
+        '''
+        
         i = 1
+        reg_values = []
         while (i <= self.no_of_instructions):
+            reg_values.append(self.reg_file.getState())
+            
             self.cycles += 1
+            
             state = self.ctrl_unit.pipeline(self.reg_file, i_mem, d_mem)
             
             if state['w']:
@@ -19,8 +28,14 @@ class CPU:
 
             if type(state['x']) is int:
                 self.ctrl_unit.flush()
-                self.reg_file.program_counter = state['x']
+                self.reg_file.program_counter.setValue(state['x'])
+                jump = state['x'] / 4
+                i += jump
                 continue
             
             if state['f']:
-                self.reg_file.program_counter += 4
+                pc = self.reg_file.program_counter.getValue()
+                pc += 4
+                self.reg_file.program_counter.setValue(pc)
+        
+        return reg_values

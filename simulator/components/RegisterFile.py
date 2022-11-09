@@ -16,3 +16,12 @@ class RegisterFile:
         while (i != NO_OF_REGISTERS):
             self.gen_registers.append(Register())
             i += 1
+        
+    def getState(self):
+        reg_values = []
+
+        for reg in self.gen_registers:
+            reg_values.append(reg.getValue())
+        
+        reg_values.append(self.program_counter.getValue())
+        return reg_values

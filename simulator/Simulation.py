@@ -15,7 +15,14 @@ class Simulation:
         print(self.i_mem)
         self.d_mem = comp.DataMemory(d_mem_delay)
         self.cpu = comp.CPU(no_of_instructions)
+        self.reg_values = None
 
     def begin(self):
         print("Simulation has begun")
-        self.cpu.run(self.i_mem, self.d_mem)
+        self.reg_values = self.cpu.run(self.i_mem, self.d_mem)
+
+    def getPerCycleRegState(self):
+        return self.reg_values
+    
+    def getFinalDMemState(self):
+        return self.d_mem.data
