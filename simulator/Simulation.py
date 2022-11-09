@@ -14,8 +14,8 @@ class Simulation:
         self.i_mem = comp.InstructionMemory(binary, i_mem_delay)
         print(self.i_mem)
         self.d_mem = comp.DataMemory(d_mem_delay)
-        self.cpu = comp.CPU(no_of_instructions, self.i_mem, self.d_mem)
+        self.cpu = comp.CPU(no_of_instructions)
 
     def begin(self):
         print("Simulation has begun")
-        self.cpu.run()
+        self.cpu.run(self.i_mem, self.d_mem)

@@ -4,8 +4,6 @@ NO_OF_REGISTERS = 32
 
 class RegisterFile:
 
-    # registers = list()
-
     def __init__(self) -> None:
         '''
         Initialize 32 general purpose registers and the program counter
