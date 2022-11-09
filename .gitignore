@@ -1,3 +1,6 @@
 simulator/__pycache__/
 simulator/components/__pycache__/
 log.md
+Assembler.py
+test_assembly
+test_bin

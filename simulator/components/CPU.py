@@ -16,6 +16,7 @@ class CPU:
 
         i = 1
         reg_values = []
+        
         while (i <= self.no_of_instructions):
             reg_values.append(self.reg_file.getState())
             
@@ -45,4 +46,5 @@ class CPU:
                 pc += 4
                 self.reg_file.program_counter.setValue(pc)
         
+        reg_values.append(self.reg_file.getState())
         return reg_values

@@ -15,6 +15,7 @@ def fetch(reg_file: comp.RegisterFile, i_mem: comp.InstructionMemory, no_of_inst
     response = i_mem.readData(pc)
     
     if not response:
+        print("f")
         return False
     
     if comp.FD_intermediate:
@@ -41,6 +42,12 @@ def decode(reg_file: comp.RegisterFile) -> bool:
     if not comp.FD_intermediate:
         return False
     
+    # for STORENOC
+    if comp.FD_intermediate == "00000000000000000111000001010101":
+        comp.DX_intermediate['STORENOC'] = True
+        print("D")
+        return True
+
     # immediate bits for ADDI or offset bits for LW, converted to an unsigned integer which will later be sign-extended
     imm = int(comp.FD_intermediate[-32:-20], 2)
 
@@ -113,7 +120,24 @@ def decode(reg_file: comp.RegisterFile) -> bool:
         comp.DX_intermediate['operation']   = funct3 + opcode
         print("D")
         return True
-
+    
+    # for LOADNOC
+    if (funct3 + opcode) == '1010101010':
+        if not reg_file.gen_registers[rs1].available:
+            print("d")
+            return False
+        if not reg_file.gen_registers[rs2].available:
+            print("d")
+            return False
+    
+        comp.DX_intermediate['type']        = 'I'
+        comp.DX_intermediate['rs1_data']    = reg_file.gen_registers[rs1].getValue()
+        comp.DX_intermediate['rs2_data']    = reg_file.gen_registers[rs2].getValue()
+        comp.DX_intermediate['imm']         = sw_offset
+        comp.DX_intermediate['operation']   = funct3 + opcode
+        print("D")
+        return True
+    
     # for operations 'ADDI', 'LW'
     else:
         if not reg_file.gen_registers[rs1].available:
@@ -139,11 +163,17 @@ def execute():
     Returns False if XM_intermediate is already filled or if DX_intermediate is empty (there is no decoded instruction to execute).
     '''
     if comp.XM_intermediate:
+        print("x")
         return False
     
     if not comp.DX_intermediate:
         return False
     
+    if 'STORENOC' in comp.DX_intermediate:
+        comp.XM_intermediate['STORENOC'] = True
+        print("X")
+        return True
+
     # for operations 'ADD', 'SUB', 'AND', 'OR', 'SLL', 'SRA'
     if (comp.DX_intermediate['type'] == 'R'):
         comp.XM_intermediate['type']        = comp.DX_intermediate['type']
@@ -155,8 +185,8 @@ def execute():
         print("X")
         return True
 
-    # for operation 'SW'
-    if (comp.DX_intermediate['operation'] == "0100100011"):
+    # for operations 'SW', 'LOADNOC'
+    if (comp.DX_intermediate['operation'] == "0100100011") or (comp.DX_intermediate['operation'] == "1010101010"):
         comp.XM_intermediate['type']        = comp.DX_intermediate['type']
         comp.XM_intermediate['res']         = comp.getResult(comp.DX_intermediate['rs1_data'],
                                                              comp.DX_intermediate['imm'],
@@ -196,11 +226,24 @@ def memory(d_mem: comp.DataMemory):
     '''
 
     if comp.MW_intermediate:
+        print("m")
         return False
     
     if not comp.XM_intermediate:
         return False
     
+    # for 'STORENOC'
+    if 'STORENOC' in comp.XM_intermediate:
+        write_complete = d_mem.writeData(16400, 1)
+        
+        if not write_complete:
+            print("m")
+            return False
+        
+        comp.MW_intermediate['STORENOC']       = True
+        print("M")
+        return True
+
     # for operation 'BEQ'
     if comp.XM_intermediate['type'] == 'U':
         comp.MW_intermediate['type'] = comp.XM_intermediate['type']
@@ -219,6 +262,7 @@ def memory(d_mem: comp.DataMemory):
         loaded_data = d_mem.readData(comp.XM_intermediate['res'])
 
         if not loaded_data:
+            print("m")
             return False
          
         loaded_data = int(loaded_data, 2)
@@ -230,11 +274,12 @@ def memory(d_mem: comp.DataMemory):
         print("M")
         return True
     
-    # for operation 'SW'
-    if comp.XM_intermediate['operation'] == "0100100011":
+    # for operation 'SW', 'LOADNOC'
+    if (comp.XM_intermediate['operation'] == "0100100011") or (comp.XM_intermediate['operation'] == "1010101010"):
         write_complete = d_mem.writeData(comp.XM_intermediate['res'], comp.XM_intermediate['rs2_data'])
         
         if not write_complete:
+            print("m")
             return False
         
         comp.MW_intermediate['operation']       = comp.XM_intermediate['operation']
@@ -250,5 +295,7 @@ def writeback(reg_file: comp.RegisterFile):
         print("W")
         reg_file.gen_registers[comp.MW_intermediate['rd']].setValue(comp.MW_intermediate['res'])
         reg_file.gen_registers[comp.MW_intermediate['rd']].toggleAvailability()
+        return True
     
+    print("W")
     return True

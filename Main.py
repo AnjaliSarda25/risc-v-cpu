@@ -19,7 +19,7 @@ if not args.idelay:
 input_binary = ""
 
 # Open file containing the test binary
-input_file = open("test_binary", "r")
+input_file = open("test_bin", "r")
 
 # Store contents of input_file as a string
 file_content = input_file.read()
@@ -52,7 +52,10 @@ for i, state in enumerate(reg_states):
     r = range(len(state))
 
     for j in r:
-        output_file.write("x[{}] | ".format(j))
+        if j == 32:
+            output_file.write("pc | ")
+        else:    
+            output_file.write("x[{}] | ".format(j))
 
     output_file.write("\n|")
     
