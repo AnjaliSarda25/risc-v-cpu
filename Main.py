@@ -48,7 +48,15 @@ output_file = open("log.md", "w")
 output_file.write("# Log File:\n\n")
 
 output_file.write("## Total number of cycles = {}\n\n\n".format(len(reg_states) - 1))
+
+if simulation.cpu.exceptions:
+    for exception in simulation.cpu.exceptions:
+        output_file.write(exception)
+        output_file.write("\n")
+
 output_file.write("<br>\n\n")
+
+
 
 for i, state in enumerate(reg_states):
     output_file.write("### State of register file when cycles passed = {}\n---\n".format(i))

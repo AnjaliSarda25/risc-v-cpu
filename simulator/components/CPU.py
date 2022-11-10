@@ -6,6 +6,7 @@ class CPU:
         self.ctrl_unit = comp.CtrlUnit()
         self.no_of_instructions = no_of_instructions
         self.cycles = 0
+        self.exceptions = []
 
     def run(self, i_mem: comp.InstructionMemory, d_mem: comp.DataMemory):
         '''
@@ -30,7 +31,7 @@ class CPU:
 
             if type(state['x']) is int:
                 if (state['x'] % 4) != 0:
-                    print("Exception: Misaligned Instruction Memory Access")
+                    self.exceptions.append("Exception at cycle {}: target address of branch operation will cause a misaligned instruction memory access".format(self.cycles))
                 
                 else:    
                     self.ctrl_unit.flush()
