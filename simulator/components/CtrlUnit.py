@@ -5,7 +5,7 @@ class CtrlUnit:
     def __init__(self):
         print("CU created")
 
-    def pipeline(self, reg_file: comp.RegisterFile, i_mem: comp.InstructionMemory, d_mem: comp.DataMemory, no_of_instructions: int):
+    def pipeline(self, reg_file: comp.RegisterFile, i_mem: comp.InstructionMemory, d_mem: comp.DataMemory, no_of_instructions: int, i: int):
         state = {}
 
         print("\n")
@@ -26,7 +26,7 @@ class CtrlUnit:
         if state['d']:
             comp.FD_intermediate = ""
  
-        state['f'] = comp.fetch(reg_file, i_mem, no_of_instructions)
+        state['f'] = comp.fetch(reg_file, i_mem, no_of_instructions, i)
         
         return state
 

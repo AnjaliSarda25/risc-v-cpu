@@ -1,6 +1,6 @@
 import simulator.components as comp
 
-def fetch(reg_file: comp.RegisterFile, i_mem: comp.InstructionMemory, no_of_instructions: int) -> bool:
+def fetch(reg_file: comp.RegisterFile, i_mem: comp.InstructionMemory, no_of_instructions: int, instruction: int) -> bool:
     '''
     Requests the instruction memory for the instruction to which the program counter points.\n 
     Returns True once instruction is fetched and stored in the FD_intermediate.\n
@@ -23,6 +23,11 @@ def fetch(reg_file: comp.RegisterFile, i_mem: comp.InstructionMemory, no_of_inst
         return False
     
     comp.FD_intermediate = response
+
+    if comp.FD_intermediate[-7:] == "1100011":
+        comp.BEQ_instructions.append(pc)
+        comp.BEQ_instructions.append(instruction)
+
     print("F")
     
     return True
@@ -159,7 +164,7 @@ def execute():
     Computes the arithmetic/logical parts of the operation specified by DX_intermediate.\n
     Invokes functions defined in the ALU module to compute the final result of operations 'ADD', 'SUB', 'AND', 'OR', 'SLL', 'SRA', 'ADDI'
     and to compute the memory address accessed by 'LW' and 'SW'.\n
-    Evaluates the equality condition in case of 'BEQ' Returns increment for program counter if the equality condition is satisfied.\n
+    Evaluates the equality condition in case of 'BEQ' and returns increment for program counter if the equality condition is satisfied.\n
     Returns False if XM_intermediate is already filled or if DX_intermediate is empty (there is no decoded instruction to execute).
     '''
     if comp.XM_intermediate:

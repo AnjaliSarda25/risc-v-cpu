@@ -24,22 +24,22 @@ class CPU:
             i_mem.decrementResTime()
             d_mem.decrementResTime()
             
-            state = self.ctrl_unit.pipeline(self.reg_file, i_mem, d_mem, self.no_of_instructions)
+            state = self.ctrl_unit.pipeline(self.reg_file, i_mem, d_mem, self.no_of_instructions, i)
             
             if state['w']:
                 i += 1
 
             if type(state['x']) is int:
-                self.ctrl_unit.flush()
-                self.reg_file.program_counter.setValue(state['x'])
-
-                if (self.reg_file.program_counter.getValue() % 4) != 0:
+                if (state['x'] % 4) != 0:
                     print("Exception: Misaligned Instruction Memory Access")
-                    break
                 
-                jump = state['x'] / 4
-                i += jump
-                continue
+                else:    
+                    self.ctrl_unit.flush()
+                    self.reg_file.program_counter.setValue(comp.BEQ_instructions.pop(0) + state['x'])
+                
+                    jump = state['x'] / 4
+                    i = comp.BEQ_instructions.pop(0) + jump + 1
+                    continue
             
             if state['f']:
                 pc = self.reg_file.program_counter.getValue()
