@@ -29,6 +29,14 @@ Current Features:
 
 <hr>
 
+## Steps to run:
+
+1. Clone the repository
+2. cd into top level directory
+3. run `python3 Main.py`
+
+<hr>
+
 ## Please See: Assumptions
 
 As stated in the specifications of the RISC-V ISA,
