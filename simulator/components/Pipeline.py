@@ -101,7 +101,7 @@ def decode(reg_file: comp.RegisterFile) -> bool:
             # print("d")
             return False
 
-        comp.DX_intermediate['type']        = 'U'
+        comp.DX_intermediate['type']        = 'B'
         comp.DX_intermediate['rs1_data']    = reg_file.gen_registers[rs1].getValue()
         comp.DX_intermediate['rs2_data']    = reg_file.gen_registers[rs2].getValue()
         comp.DX_intermediate['beq_offset']  = beq_offset
@@ -118,6 +118,7 @@ def decode(reg_file: comp.RegisterFile) -> bool:
             # print("d")
             return False
     
+        # SW is an S type instruction but has been given I type for convenience
         comp.DX_intermediate['type']        = 'I'
         comp.DX_intermediate['rs1_data']    = reg_file.gen_registers[rs1].getValue()
         comp.DX_intermediate['rs2_data']    = reg_file.gen_registers[rs2].getValue()
@@ -219,7 +220,7 @@ def execute():
         if (comp.DX_intermediate['rs1_data'] == comp.DX_intermediate['rs2_data']):
             comp.XM_intermediate['type'] = comp.DX_intermediate['type']
             # print("x")
-            return comp.getResult(0, comp.DX_intermediate['beq_offset'], None, 'U')
+            return comp.getResult(0, comp.DX_intermediate['beq_offset'], None, 'B')
         # print("x")
         return True
 
@@ -250,7 +251,7 @@ def memory(d_mem: comp.DataMemory):
         return True
 
     # for operation 'BEQ'
-    if comp.XM_intermediate['type'] == 'U':
+    if comp.XM_intermediate['type'] == 'B':
         comp.MW_intermediate['type'] = comp.XM_intermediate['type']
         # print("m")
         return True
