@@ -1,7 +1,0 @@
-BEQ r0 r1 20
-ADDI r2 r0 5
-ADDI r3 r0 5
-ADDI r4 r0 5
-ADDI r5 r0 5
-ADDI r6 r0 5
-ADDI r7 r0 5

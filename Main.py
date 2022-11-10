@@ -47,6 +47,7 @@ output_file = open("log.md", "w")
 output_file.write("# Log File:\n\n")
 
 output_file.write("## Total number of cycles = {}\n\n\n".format(len(reg_states) - 1))
+output_file.write("<br>\n\n")
 
 for i, state in enumerate(reg_states):
     output_file.write("### State of register file when cycles passed = {}\n---\n".format(i))
@@ -73,6 +74,8 @@ for i, state in enumerate(reg_states):
     
     output_file.write("\n\n")
 
+output_file.write("<br>")
+output_file.write("<br>\n\n")
 output_file.write("## State of Memory Mapped Registers and the end of program: \n")
 output_file.write("```\n")
 output_file.write("- 0x4000: {}\n".format(simulation.d_mem.readData(16384)))
@@ -82,9 +85,11 @@ output_file.write("- 0x400c: {}\n".format(simulation.d_mem.readData(16396)))
 output_file.write("- 0x4010: {}\n".format(simulation.d_mem.readData(16400)))
 output_file.write("```\n")
 
+output_file.write("<br>")
+output_file.write("<br>\n\n")
 output_file.write("## State of Data Memory at the end of program: \n")
 output_file.write("```\n")
 
 for i in range(16384):
-    output_file.write("- D_Mem[{}]:     {}\n".format(i, simulation.d_mem.readData(i)))
+    output_file.write("- D_Mem[{}]:     {}\n".format(i, simulation.d_mem.data[i]))
 output_file.write("```\n")
