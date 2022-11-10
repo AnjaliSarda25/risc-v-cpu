@@ -47,6 +47,8 @@ As stated in the specifications of the RISC-V ISA,
 
 3. it is up to the execution environment to allow misaligned data memory accesses by load and store operations. We assume that our data memory allows for misaligned memory access.
 
+4. the BEQ operation is completed during it's execute phase, after which the pipeline is flushed.
+
 Further assumption:
 
 - In case both the writeback and the decode stage try to access the same register of the register file in the same cycle, the writeback stage will complete the write first and toggle the availability of the register it wrote to, making it available for access by the decode stage next in the same cycle.
