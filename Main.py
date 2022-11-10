@@ -19,7 +19,7 @@ if not args.idelay:
 input_binary = ""
 
 # Open file containing the test binary
-input_file = open("test_bin", "r")
+input_file = open("mid_evaluation_test_binary", "r")
 
 # Store contents of input_file as a string
 file_content = input_file.read()

@@ -1,12 +1,11 @@
 from simulator.components.Memory import Memory
 
 BITS_PER_ADDRESS = 8
-MEM_SIZE = 100          # in bytes
+MEM_SIZE = 1024          # in bytes
 
 class InstructionMemory(Memory):
 
     def __init__(self, binary: str, delay: int, size: int = MEM_SIZE) -> None:
-        print("IMem created")
         super().__init__(size, delay)
         
         byte_address = 0
@@ -14,4 +13,4 @@ class InstructionMemory(Memory):
             self.data[byte_address] = binary[i:i + BITS_PER_ADDRESS]
             byte_address += 1
         
-        print(self.data)
+        print("- instructions loaded in instruction memory")

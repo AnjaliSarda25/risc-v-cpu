@@ -8,7 +8,6 @@ class Simulation:
     i_mem_delay: int, 
     d_mem_delay: int) -> None:
         
-        print("Simulator initialized")
         self.i_mem = comp.InstructionMemory(binary, i_mem_delay)
         print(self.i_mem)
         self.d_mem = comp.DataMemory(d_mem_delay)
@@ -16,7 +15,7 @@ class Simulation:
         self.reg_values = None
 
     def begin(self):
-        print("Simulation has begun")
+        print("- simulation has begun!")
         self.reg_values = self.cpu.run(self.i_mem, self.d_mem)
 
     def getPerCycleRegState(self):

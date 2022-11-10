@@ -1,11 +1,12 @@
 import simulator.components as comp
 
 class CtrlUnit:
-    
-    def __init__(self):
-        print("CU created")
 
-    def pipeline(self, reg_file: comp.RegisterFile, i_mem: comp.InstructionMemory, d_mem: comp.DataMemory, no_of_instructions: int, i: int):
+    def pipeline(self, reg_file: comp.RegisterFile, i_mem: comp.InstructionMemory, d_mem: comp.DataMemory, no_of_instructions: int, i: int) -> dict:
+        '''
+        Executes each phase of the pipeline with appropriate inputs.\n
+        Returns a dictionary of states.\n
+        '''
         state = {}
 
         print("\n")
@@ -30,7 +31,10 @@ class CtrlUnit:
         
         return state
 
-    def flush(self):
+    def flush(self) -> None:
+        '''
+        Clears the intermediate registers of the pipeline.
+        '''
         comp.FD_intermediate = ""
         comp.DX_intermediate.clear()
         comp.XM_intermediate.clear()

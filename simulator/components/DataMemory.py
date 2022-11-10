@@ -6,7 +6,6 @@ UNSIGNED_CEIL = 2 ** 32
 class DataMemory(Memory):
 
     def __init__(self, delay: int, size: int = MEM_SIZE) -> None:
-        print("DMem created")
         super().__init__(size, delay)
         pass
 

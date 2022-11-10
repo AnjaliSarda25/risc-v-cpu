@@ -2,7 +2,6 @@ import simulator.components as comp
 
 class CPU:
     def __init__(self, no_of_instructions):
-        print("CPU created")
         self.reg_file = comp.RegisterFile()
         self.ctrl_unit = comp.CtrlUnit()
         self.no_of_instructions = no_of_instructions

@@ -2,7 +2,7 @@ class Memory:
 
     def __init__(self, size: int, delay: int) -> None:
         '''
-        Initializes the memory to be of a fixed size
+        Initializes the memory to be of a fixed size (in bytes)
         '''
         self.data = ["00000000",] * size
         self.delay = delay
