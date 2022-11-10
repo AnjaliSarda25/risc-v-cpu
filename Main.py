@@ -56,8 +56,6 @@ if simulation.cpu.exceptions:
 
 output_file.write("<br>\n\n")
 
-
-
 for i, state in enumerate(reg_states):
     output_file.write("### State of register file when cycles passed = {}\n---\n".format(i))
     
@@ -83,15 +81,21 @@ for i, state in enumerate(reg_states):
     
     output_file.write("\n\n")
 
+def signExtend(val):
+    val = int(val, 2)
+    if val > 2 ** 31:
+        val -= 2 ** 32
+    return val
+
 output_file.write("<br>")
 output_file.write("<br>\n\n")
 output_file.write("## State of Memory Mapped Registers and the end of program: \n")
 output_file.write("```\n")
-output_file.write("- 0x4000: {}\n".format(simulation.d_mem.readData(16384)))
-output_file.write("- 0x4004: {}\n".format(simulation.d_mem.readData(16388)))
-output_file.write("- 0x4008: {}\n".format(simulation.d_mem.readData(16392)))
-output_file.write("- 0x400c: {}\n".format(simulation.d_mem.readData(16396)))
-output_file.write("- 0x4010: {}\n".format(simulation.d_mem.readData(16400)))
+output_file.write("- 0x4000: {}\n".format(signExtend(simulation.d_mem.readData(16384))))
+output_file.write("- 0x4004: {}\n".format(signExtend(simulation.d_mem.readData(16388))))
+output_file.write("- 0x4008: {}\n".format(signExtend(simulation.d_mem.readData(16392))))
+output_file.write("- 0x400c: {}\n".format(signExtend(simulation.d_mem.readData(16396))))
+output_file.write("- 0x4010: {}\n".format(signExtend(simulation.d_mem.readData(16400))))
 output_file.write("```\n")
 
 output_file.write("<br>")
