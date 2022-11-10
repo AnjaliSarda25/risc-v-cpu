@@ -9,7 +9,7 @@ class CtrlUnit:
         '''
         state = {}
 
-        print("\n")
+        # print("\n")
 
         state['w'] = comp.writeback(reg_file)
         if state['w']:

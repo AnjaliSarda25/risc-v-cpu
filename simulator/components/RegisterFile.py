@@ -8,7 +8,6 @@ class RegisterFile:
         '''
         Initialize 32 general purpose registers and the program counter
         '''
-        print("RegisterFile created")
         self.program_counter = comp.Register()
         self.gen_registers = []
 

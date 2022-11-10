@@ -9,7 +9,6 @@ class Simulation:
     d_mem_delay: int) -> None:
         
         self.i_mem = comp.InstructionMemory(binary, i_mem_delay)
-        print(self.i_mem)
         self.d_mem = comp.DataMemory(d_mem_delay)
         self.cpu = comp.CPU(no_of_instructions)
         self.reg_values = None

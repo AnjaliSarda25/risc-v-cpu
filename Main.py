@@ -37,6 +37,7 @@ no_of_instructions = len(input_binary) / INSTRUCTION_SIZE
 # Run the simulation
 simulation = simulator.Simulation(input_binary, no_of_instructions, args.idelay, args.ddelay)
 simulation.begin()
+print("- simulation complete")
 
 # Generating log file
 reg_states = simulation.getPerCycleRegState()
@@ -93,3 +94,5 @@ output_file.write("```\n")
 for i in range(16384):
     output_file.write("- D_Mem[{}]:     {}\n".format(i, simulation.d_mem.data[i]))
 output_file.write("```\n")
+
+print("- log file generated, checkout log.md")
