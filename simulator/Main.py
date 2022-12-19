@@ -26,7 +26,7 @@ def getCmdLineArgs():
         args.idelay = int(args.idelay)
     
     if not args.binary:
-        args.binary = "mid_evaluation_test_binary"
+        args.binary = "test_bin"
     
     return args
 
@@ -55,7 +55,7 @@ def main():
     Logger.generateLog(d_mem_state, cpu_states)
     # Logger.summarizeLog(log)
 
-    #Plotter.plotStalls(cpu_states)
+    Plotter.plotStalls(cpu_states)
     Plotter.plotIMemAccesses(cpu_states)
     Plotter.plotDMemAccesses(cpu_states)
 

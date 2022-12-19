@@ -61,13 +61,13 @@ def plotStalls(cpu_states):
         cycles.append(i)
         if cpu_states['stalled'][i][0]:
             stage.append("Fetch")
-        if cpu_states['stalled'][i][1]:
+        elif cpu_states['stalled'][i][1]:
             stage.append("Decode")
-        if cpu_states['stalled'][i][2]:
+        elif cpu_states['stalled'][i][2]:
             stage.append("Execute")
-        if cpu_states['stalled'][i][3]:
+        elif cpu_states['stalled'][i][3]:
             stage.append("Memory")
-        if cpu_states['stalled'][i][4]:
+        elif cpu_states['stalled'][i][4]:
             stage.append("Writeback")
         else:
             stage.append("No stall")    
