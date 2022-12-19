@@ -1,24 +1,30 @@
-import simulator.components as comp
+from InstructionMemory import InstructionMemory
+from DataMemory import DataMemory
+from CPU import CPU
 
-class Simulation:
+INSTRUCTION_SIZE = 32
 
-    def __init__(self, 
-    binary: str, 
-    no_of_instructions: int,
-    i_mem_delay: int, 
-    d_mem_delay: int) -> None:
-        
-        self.i_mem = comp.InstructionMemory(binary, i_mem_delay)
-        self.d_mem = comp.DataMemory(d_mem_delay)
-        self.cpu = comp.CPU(no_of_instructions)
-        self.reg_values = None
+def begin(binary: str, i_mem_delay: int, d_mem_delay):
+    global i_mem, d_mem, cpu
 
-    def begin(self):
-        print("- simulation has begun!")
-        self.reg_values = self.cpu.run(self.i_mem, self.d_mem)
+    no_of_instructions = len(binary) // INSTRUCTION_SIZE
+    ceil_pc = no_of_instructions * 4
 
-    def getPerCycleRegState(self):
-        return self.reg_values
-    
-    def getFinalDMemState(self):
-        return self.d_mem.data
+    i_mem   = InstructionMemory(binary, i_mem_delay)
+    d_mem   = DataMemory(d_mem_delay)
+    cpu     = CPU(ceil_pc)
+
+    cpu.run(no_of_instructions, i_mem, d_mem)
+
+def getPerCycleCPUState():
+    cpu_states = {
+        'reg_values' : cpu.reg_file_states,
+        'stalled'    : cpu.stalls,
+        'pipelined'  : cpu.pipelined_instructions,
+        'mem_instructions': cpu.ctrl_unit.pipe.mem_instructions,
+        'mem_accesses' : cpu.ctrl_unit.pipe.d_mem_accesses
+    }
+    return cpu_states
+
+def getFinalDMemState():
+    return d_mem.data

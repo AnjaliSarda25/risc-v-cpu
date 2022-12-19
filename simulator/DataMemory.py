@@ -1,4 +1,6 @@
-from simulator.components.Memory import Memory
+import Commons
+
+from Memory import Memory
 
 MEM_SIZE = 16384 + 5*4
 UNSIGNED_CEIL = 2 ** 32
@@ -18,12 +20,7 @@ class DataMemory(Memory):
             self.res_time = self.delay
 
         if (self.res_time == 0):
-            if data < 0:
-                data = data + UNSIGNED_CEIL
-            
-            bin_data = bin(data)[2:]
-            zero_bits = '0' * (32 - len(bin_data))
-            data_str = zero_bits + bin_data
+            data_str = Commons.twosComplement(data, 32)
             
             self.data[address]      = data_str[:8]
             self.data[address + 1]  = data_str[8:16]

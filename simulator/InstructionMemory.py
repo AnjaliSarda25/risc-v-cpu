@@ -1,4 +1,4 @@
-from simulator.components.Memory import Memory
+from Memory import Memory
 
 BITS_PER_ADDRESS = 8
 MEM_SIZE = 1024          # in bytes

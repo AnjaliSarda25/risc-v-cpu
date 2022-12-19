@@ -1,6 +1,12 @@
 simulator/__pycache__/
-simulator/components/__pycache__/
-Assembler.py
-test_assembly
-test_bin
+__pycache__/
+assembler/
 tests/
+mid_evaluation_test_assembly.md
+mid_evaluation_test_binary
+log.md
+dmem.jpg
+imem.jpg
+log.txt
+stalls.jpg
+simulator/Plotter.py
