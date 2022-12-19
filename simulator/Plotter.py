@@ -58,18 +58,23 @@ def plotStalls(cpu_states):
     fig, ax = plt.subplots()
 
     for i in range(len(cpu_states['reg_values'])): 
-        cycles.append(i)
         if cpu_states['stalled'][i][0]:
+            cycles.append(i)
             stage.append("Fetch")
-        elif cpu_states['stalled'][i][1]:
+        if cpu_states['stalled'][i][1]:
+            cycles.append(i)
             stage.append("Decode")
-        elif cpu_states['stalled'][i][2]:
+        if cpu_states['stalled'][i][2]:
+            cycles.append(i)
             stage.append("Execute")
-        elif cpu_states['stalled'][i][3]:
+        if cpu_states['stalled'][i][3]:
+            cycles.append(i)
             stage.append("Memory")
-        elif cpu_states['stalled'][i][4]:
+        if cpu_states['stalled'][i][4]:
+            cycles.append(i)
             stage.append("Writeback")
-        else:
+        if not(cpu_states['stalled'][i][0] or cpu_states['stalled'][i][1] or cpu_states['stalled'][i][2] or cpu_states['stalled'][i][3] or cpu_states['stalled'][i][4]):
+            cycles.append(i)
             stage.append("No stall")    
     
     ax.scatter(cycles, stage, marker='o')

@@ -26,7 +26,7 @@ def getCmdLineArgs():
         args.idelay = int(args.idelay)
     
     if not args.binary:
-        args.binary = "test_bin"
+        args.binary = "final_evaluation_test_binary"
     
     return args
 

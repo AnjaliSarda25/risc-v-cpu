@@ -28,7 +28,9 @@ class Pipeline:
         pc = reg_file.program_counter.value
         if pc >= self.ceil_pc:
             return False
-
+        
+        self.in_pipe[0]            = (pc // 4) + 1
+        
         response = None
 
         if not self.i_mem_response:
@@ -45,6 +47,7 @@ class Pipeline:
         if not self.FD_Buffer.empty:
             print("F")
             self.stalled[0] = True
+            self.in_pipe[0]            = (pc // 4) + 1
             return False
         
         self.FD_Buffer.pc          = pc
@@ -52,19 +55,20 @@ class Pipeline:
         self.FD_Buffer.instruction_no = (pc // 4) + 1
         self.FD_Buffer.empty       = False
         self.i_mem_response        = None
-        self.in_pipe[0]            = self.FD_Buffer.instruction_no
         print("F")
         return True
 
 
     def decode(self, reg_file: RegisterFile):
 
+        if self.FD_Buffer.empty:
+            return False
+
+        self.in_pipe[1] = self.FD_Buffer.instruction_no
+        
         if not self.DX_Buffer.empty:
             print("D")
             self.stalled[1] = True
-            return False
-        
-        if self.FD_Buffer.empty:
             return False
 
         self.DX_Buffer.instruction_no   = self.FD_Buffer.instruction_no
@@ -141,12 +145,14 @@ class Pipeline:
 
     def execute(self, alu: ALU, reg_file: RegisterFile):
 
+        if self.DX_Buffer.empty:
+            return False
+
+        self.in_pipe[2]                 = self.DX_Buffer.instruction_no
+
         if not self.XM_Buffer.empty:
             print("X")
             self.stalled[2] = True
-            return False
-        
-        if self.DX_Buffer.empty:
             return False
         
         self.XM_Buffer.empty            = False
@@ -190,13 +196,13 @@ class Pipeline:
 
     def memory(self, d_mem: DataMemory):
         
-        print(self.XM_Buffer.prev_output)
         self.d_mem_accesses.append(self.XM_Buffer.prev_output)
 
         if self.XM_Buffer.empty:
             return False
         
-
+        self.in_pipe[3] = self.XM_Buffer.instruction_no
+        
         if self.XM_Buffer.opcode == "1010101":
             write_complete = None
 
@@ -272,6 +278,7 @@ class Pipeline:
             return False
         
         self.in_pipe[4] = self.MW_Buffer.instruction_no
+        
 
         if self.MW_Buffer.opcode in ["0110011", "0010011", "0000011"]:
             rd = reg_file.getReg(self.MW_Buffer.rd)
