@@ -21,11 +21,21 @@ Additional instructions:
 - LOADNOC rs2 rs1 off
 - STORENOC
 
-Current Features:
+Features:
 
 1. Simulator is able to parse all instructions given as an input binary and simulate their pipelined execution
-2. Supports decode stalling in case of read after write data dependencies
-3. Generates log file recording the total number of cycles, the state of the register file per clock cycle and the state of the data memory and memory mapped registers at the end of the simulation.
+2. Pipeline with full bypassing
+3. Delay cycles for memory accesses can be specified by the user and the pipeline stages will stall accordingly.
+4. Logger generates a log file recording
+   - per cycle state of the register file
+   - instuctions in pipeline in each cycle
+   - stalls per clock cycle
+   - state of the data memory at the end of the simulation
+5. Plotter generates plots for
+   - instruction memory access pattern
+   - data memory access pattern
+   - stalls per cycle
+   - number of memory/register instructions
 
 <hr>
 
@@ -33,7 +43,7 @@ Current Features:
 
 1. Clone the repository
 2. cd into top level directory
-3. run `python3 Main.py`
+3. run `python3 simulator/Main.py`
 
 <hr>
 
@@ -47,9 +57,8 @@ As stated in the specifications of the RISC-V ISA,
 
 3. it is up to the execution environment whether or not to allow misaligned data memory accesses by load and store operations. We assume that our data memory allows for misaligned memory access.
 
-
 Further assumptions:
 
 - In case both the writeback and the decode stage try to access the same register of the register file in the same cycle, the writeback stage will complete the write first and toggle the availability of the register it wrote to, making it available for access by the decode stage next in the same cycle.
 
-- the BEQ operation is completed during it's execute phase, after which the pipeline is flushed.
+- in case of BEQ, if the condition is true, the pipeline is ALWAYS flushed
