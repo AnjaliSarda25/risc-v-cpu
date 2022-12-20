@@ -125,7 +125,7 @@ class Pipeline:
             self.DX_Buffer.rd           = self.FD_Buffer.instruction[-12:-7]
             self.DX_Buffer.funct3       = self.FD_Buffer.instruction[-15:-12]
             self.DX_Buffer.funct7       = ""
-            self.DX_Buffer.immediate    = Commons.signExtend(self.FD_Buffer.instruction[-32:-20])
+            self.DX_Buffer.immediate    = Commons.signExtend(self.FD_Buffer.instruction[-32:-20], 12)
 
             print("D")
             if (type(self.DX_Buffer.rs1_val) is int):
