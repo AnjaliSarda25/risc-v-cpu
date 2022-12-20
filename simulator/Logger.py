@@ -41,6 +41,7 @@ def generateLog(d_mem_state, cpu_states):
         log_file.write(line)
 
     log_file.write("No other addresses were modified -> They all store 0")
+    log_file.close()
 
 def summarizeLog():
     pass

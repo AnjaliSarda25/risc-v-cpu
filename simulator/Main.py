@@ -58,6 +58,7 @@ def main():
     Plotter.plotStalls(cpu_states)
     Plotter.plotIMemAccesses(cpu_states)
     Plotter.plotDMemAccesses(cpu_states)
+    Plotter.plotInstructionTypes(cpu_states, len(input_binary) // 32)
 
 
 main()

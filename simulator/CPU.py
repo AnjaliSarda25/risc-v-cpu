@@ -63,3 +63,4 @@ class CPU:
         self.reg_file_states.append(self.reg_file.getState())
         self.stalls.append(self.ctrl_unit.pipe.stalled)
         self.pipelined_instructions.append(self.ctrl_unit.pipe.in_pipe)
+        return no_of_instructions
