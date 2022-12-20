@@ -1,5 +1,7 @@
 import sys
 
+import Commons
+
 sys.path.append("../")
 log_file = open("log.txt", "w")
 
@@ -20,19 +22,25 @@ def generateLog(d_mem_state, cpu_states):
 
         log_file.write("\n")
         for k in range(len(stages)):
-            log_file.write("Stage: ")
-            log_file.write(stages[k])
-            log_file.write("\n")
-            log_file.write("Instruction in stage: ")
-            log_file.write(str(cpu_states['pipelined'][i][k]))
-            log_file.write("\n")
-            log_file.write("Stalled: ")
-            log_file.write(str(cpu_states['stalled'][i][k]))
-            log_file.write("\n")
-            log_file.write("\n")
-        
+
+            line = "Stage: {}\nInstruction in stage: {}\nStalled: {}\n\n".format(stages[k],cpu_states['pipelined'][i][k],cpu_states['stalled'][i][k])
+            log_file.write(line)
+
         log_file.write("\n")
+    
+    addr = list()
+    log_file.write("Final Data Memory State\n\n")
+    for i in range(len(cpu_states['reg_values'])): 
+        if cpu_states['pipelined'][i][3] and cpu_states['pipelined'][i][3] in cpu_states['mem_instructions']:
+            if cpu_states['mem_accesses'][i - 1] not in addr:
+                addr.append(cpu_states['mem_accesses'][i - 1])
+    
+    for i in range(len(addr)):
+        data = "".join(d_mem_state[addr[i]:addr[i] + 4])
+        line = "Address: {}\nData: {} = {}\n\n".format(str(addr[i]), data, Commons.signExtend(data))
+        log_file.write(line)
+
+    log_file.write("No other addresses were modified -> They all store 0")
 
 def summarizeLog():
     pass
-

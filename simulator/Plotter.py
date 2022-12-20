@@ -22,8 +22,8 @@ def plotIMemAccesses(cpu_states):
     plt.title("Instruction Memory Access Pattern")
     plt.xticks(cycles)
     plt.yticks(i_mem_access)
+    plt.gcf().set_size_inches(20, 7)
     plt.tight_layout()
-    plt.gcf().set_size_inches(15, 5)
     plt.savefig("imem.jpg", dpi=1000)
 
 def plotDMemAccesses(cpu_states):
@@ -32,9 +32,9 @@ def plotDMemAccesses(cpu_states):
 
     for i in range(len(cpu_states['reg_values'])): 
         if cpu_states['pipelined'][i][3] and cpu_states['pipelined'][i][3] in cpu_states['mem_instructions']:
-            cycles.append(i)
+            cycles.append(str(i))
             addr = cpu_states['mem_accesses'][i - 1]
-            d_mem_access.append(addr)
+            d_mem_access.append(str(addr))
     
     print(cycles)
     print(d_mem_access)
@@ -46,8 +46,8 @@ def plotDMemAccesses(cpu_states):
     plt.title("Data Memory Access Pattern")
     plt.xticks(cycles)
     plt.yticks(d_mem_access)
+    plt.gcf().set_size_inches(20, 7)
     plt.tight_layout()
-    plt.gcf().set_size_inches(15, 5)
     plt.savefig("dmem.jpg", dpi=1000)
 
 def plotStalls(cpu_states):
@@ -82,7 +82,7 @@ def plotStalls(cpu_states):
     plt.ylabel("Stage")
     plt.title("Stalls vs Cycles")
     plt.xticks(cycles)
+    plt.gcf().set_size_inches(20, 7)
     plt.tight_layout()
-    plt.gcf().set_size_inches(15, 5)
     plt.savefig("stalls.jpg", dpi=1000)
     

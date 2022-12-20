@@ -33,6 +33,10 @@ class CtrlUnit:
         
         return state
 
-    def flush(self) -> None:
+    def flush(self, reg_file) -> None:
         self.pipe.FD_Buffer.clear()
+        if self.pipe.DX_Buffer.rd:
+            reg_file.getReg(self.pipe.DX_Buffer.rd).using.pop(0)
+        if self.pipe.DX_Buffer.opcode in ["0000011", "0100011", "0101010", "1010101"]:
+            self.pipe.mem_instructions.pop()
         self.pipe.DX_Buffer.clear()

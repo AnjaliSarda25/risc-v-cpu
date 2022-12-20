@@ -18,7 +18,7 @@ class CPU:
 
     def run(self, no_of_instructions: int, i_mem: InstructionMemory, d_mem: DataMemory):
         
-        cycle               = 0
+        cycle                 = 0
         instructions_executed = 0
 
         while (instructions_executed < no_of_instructions):
@@ -47,7 +47,7 @@ class CPU:
                     self.exceptions.append("Exception at cycle {}: target address of branch operation will cause a misaligned instruction memory access".format(self.cycles))
                 
                 else:    
-                    self.ctrl_unit.flush()
+                    self.ctrl_unit.flush(self.reg_file)
                     if state['x'][1] > self.ceil_pc:
                         state['x'][1] = self.ceil_pc
 
@@ -59,17 +59,7 @@ class CPU:
             
             if state['f']:
                 self.reg_file.program_counter.value += 4
-            # print("pc", self.reg_file.program_counter.value)
-            # print("ni", no_of_instructions)
-            # print("ie",instructions_executed)
         
-        print(self.ctrl_unit.pipe.d_mem_accesses)
-        print(d_mem.readData(0))
-        print(d_mem.readData(4))
-        print(d_mem.readData(8))
-        print(d_mem.readData(12))
-        print(d_mem.readData(16))
-        print(d_mem.readData(20))
         self.reg_file_states.append(self.reg_file.getState())
         self.stalls.append(self.ctrl_unit.pipe.stalled)
         self.pipelined_instructions.append(self.ctrl_unit.pipe.in_pipe)

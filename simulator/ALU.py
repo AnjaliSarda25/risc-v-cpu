@@ -53,6 +53,7 @@ class ALU:
         
         diff = self.in_2 - self.in_1 
         diff = self.resolveOverflow(diff)
+        print("SUB", diff)
         return diff
 
 
@@ -77,6 +78,7 @@ class ALU:
         shift = self.in_2 % 32
         res = self.in_1 << shift
         res = self.resolveOverflow(res)
+        print("SLL", res)
         return res
 
 
@@ -87,6 +89,8 @@ class ALU:
         '''
 
         shift = self.in_2 % 32
+        res = self.in_1 >> shift
+        print("SRA", res)
         return self.in_1 >> shift
 
 
